@@ -1,0 +1,13 @@
+index.php
+phpix-user-config.php
+phpix-config.php
+xthumb-*
+full*
+hd*
+qhd*
+thumb*
+cover*
+phpix-imports*
+temp*
+changelog*
+cache*
