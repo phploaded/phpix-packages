@@ -260,7 +260,7 @@ foreach ($paths as $path) {
 } 
 
 
-$jsonURL = 'https://raw.githubusercontent.com/phploaded/phpix-packages/main/phpix-updates/updates.json';
+$jsonURL = 'https://raw.githubusercontent.com/phploaded/phpix-packages/main/phpix-updates/updates.json?t='.time();
 $jdata = json_decode(file_get_contents($jsonURL), true);
 $old = $jdata['latest'];
 if(is_numeric($old)){
@@ -358,9 +358,10 @@ if ($zip->open($zipFileName, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRU
     foreach ($files as $file) {
         // Skip directories (they would be added automatically)
         if (!$file->isDir()) {
-            // Get the relative path from the updates folder
+            // Get the relative path from the updates folder and replace any backslashes
             $filePath = $file->getPathname();
             $relativePath = substr($filePath, strlen($folderPath) + 1);
+            $relativePath = str_replace('\\', '/', $relativePath); // Ensure compatibility
 
             // Add current file to zip with the relative path
             $zip->addFile($filePath, $relativePath);
