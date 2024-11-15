@@ -51,7 +51,7 @@ foreach ($fileArray as $file) {
 
 
 if ($allFilesExist) {
-
+	
 $originalFolder = '../phpix-old';
 $modifiedFolder = '../phpix';
 $outputFile = 'modified_files.txt';
@@ -169,6 +169,82 @@ if (!is_dir($updatesDir)) {
     echo "Directory created: $updatesDir<br>";
 }
 
+
+$jsonURL = 'https://raw.githubusercontent.com/phploaded/phpix-packages/main/phpix-updates/updates.json?t='.time();
+$jdata = json_decode(file_get_contents($jsonURL), true);
+$old = $jdata['latest'];
+if(is_numeric($old)){
+$new = $old + 0.01;
+} else {
+die('<p class="fail">Failed during version check!</p>');
+}
+
+
+// copy patch.php file
+
+$patchFile = 'updates/patch.php';
+
+if(file_exists('patch.php')){
+	
+	if(copy('patch.php', $patchFile)){
+	echo '<p class="pass">SQL <b>patch file</b> copied successfully.</p>';
+	} else {
+	echo '<p class="fail">SQL <b>patch file</b> FAILED to copy.</p>';
+	}
+$updateType = 'stable';
+} else {
+$updateType = 'normal'; // without patch file
+
+echo'<p>No patch file was found</p>';
+
+// if normal tag, download the latest tag file and unzip to updates folder
+
+$file = $jdata['latest'].'.zip';
+
+$ch = curl_init('https://raw.githubusercontent.com/phploaded/phpix-packages/main/phpix-updates/'.$file);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+$response = curl_exec($ch);
+curl_close($ch);
+
+$save = file_put_contents(
+'updates/'.$file,
+$response
+);
+
+// Define the path to the ZIP file
+$zipFilePath = 'updates/'.$file;
+
+// Get the directory where the ZIP file is located
+$extractTo = dirname($zipFilePath);
+
+// Initialize ZipArchive
+$zip = new ZipArchive;
+if ($zip->open($zipFilePath) === TRUE) {
+    // Extract contents to the same folder
+    $zip->extractTo($extractTo);
+    $zip->close();
+    echo '<p class="pass">Last update <b>'.$file.'</b> extracted in updates folder!</p>';
+} else {
+    echo '<p class="fail">Failed to open the Last update <b>'.$file.'</b> file.</p>';
+}
+unlink($zipFilePath);
+
+    $file = fopen($patchFile, 'w');
+    if ($file) {
+        fwrite($file, "<?php\n\n?>"); // Add opening and closing PHP tags
+        fclose($file);
+        echo '<p class="pass">Blank <b>patch.php</b> file was created.</p>';
+    } else {
+        echo '<p class="fail">Unable to create blank patch file.</p>';
+    }
+
+}
+
+
+
+
+
 // Source and destination base paths
 $sourcePath = realpath('../phpix') . '/'; // Absolute path to the source folder
 $destinationPath = $updatesDir . '/'; // Destination path is 'updates' folder
@@ -260,15 +336,6 @@ foreach ($paths as $path) {
 } 
 
 
-$jsonURL = 'https://raw.githubusercontent.com/phploaded/phpix-packages/main/phpix-updates/updates.json?t='.time();
-$jdata = json_decode(file_get_contents($jsonURL), true);
-$old = $jdata['latest'];
-if(is_numeric($old)){
-$new = $old + 0.01;
-} else {
-die('<p class="fail">Failed during version check!</p>');
-}
-
 $time = time();
 $date = date("l, d-m-Y, h:i:s a");
 $sdate = date("l, d-m-Y, h:i:s a", 1603041199);
@@ -310,29 +377,11 @@ echo '<p class="pass">changelog.html copied as <b>'.$new.'.html</b> successfully
 echo '<p class="fail"><b>changelog.html</b> FAILED to copy.</p>';
 }
 
-// copy patch.php file
-
-$patchFile = 'updates/patch.php';
-
-if(file_exists('patch.php')){
-	
-	if(copy('patch.php', $patchFile)){
-	echo '<p class="pass">SQL <b>patch file</b> copied successfully.</p>';
-	} else {
-	echo '<p class="fail">SQL <b>patch file</b> FAILED to copy.</p>';
-	}
-$updateType = 'stable';
-} else {
-	echo'<p>No patch file was found</p>';
-    $file = fopen($patchFile, 'w');
-    if ($file) {
-        fwrite($file, "<?php\n\n?>"); // Add opening and closing PHP tags
-        fclose($file);
-        echo '<p class="pass">Blank file was created.</p>';
-    } else {
-        echo '<p class="fail">Unable to create blank patch file.</p>';
-    }
-$updateType = 'normal'; // without patch file
+// removing root folder index file
+// deleting existing file
+if(file_exists('index.php')){
+unlink('index.php');
+echo '<p><b>index.php</b> in root folder was deleted.</p>';
 }
 
 // zipping to the inside path of updates folder

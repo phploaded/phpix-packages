@@ -1,9 +1,10 @@
-index.php
 phpix-user-config.php
 phpix-config.php
+main-config.js
 xthumb-*
 full*
 hd*
+fhd*
 qhd*
 thumb*
 cover*
