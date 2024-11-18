@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<?php $version='1.241118'; ?><!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Your Page Title</title>
+<title>PHPix updater v<?php echo $version; ?></title>
 <style type="text/css">
 body{
 margin:0;
@@ -31,7 +31,18 @@ border-bottom:1px solid #ddd;
 }
 </style>
 </head>
-<body><div class="content"><h1>PHPix update maker</h1><?php
+<body><div class="content"><h1>PHPix update maker v<?php echo $version; ?></h1>
+<p>Starting update process...</p>
+<?php
+
+// Helper function to simulate delay
+function delay($seconds = 1) {
+    sleep($seconds);
+}
+
+    ob_end_flush(); // Ensure PHP's output buffering is off
+    flush();
+	delay(1);
 
 // Array of filenames to check
 $fileArray = ['changelog.html', 'ignore.txt'];
@@ -56,6 +67,8 @@ $originalFolder = '../phpix-old';
 $modifiedFolder = '../phpix';
 $outputFile = 'modified_files.txt';
 $ignoreFile = 'ignore.txt';
+
+
 
 // Function to recursively get normalized file hashes for a directory
 function getNormalizedFileHashes($dir, $ignorePatterns) {
@@ -138,6 +151,9 @@ if ($fileHandle) {
     echo '<p class="fail">Unable to write to <b>'.$outputFile.'</b></p>';
 }
 
+    flush();
+	delay(2);
+
 
 // Function to recursively delete all files and folders in a directory
 function deleteDirectoryContents($dir) {
@@ -173,6 +189,7 @@ if (!is_dir($updatesDir)) {
 $jsonURL = 'https://raw.githubusercontent.com/phploaded/phpix-packages/main/phpix-updates/updates.json?t='.time();
 $jdata = json_decode(file_get_contents($jsonURL), true);
 $old = $jdata['latest'];
+
 if(is_numeric($old)){
 $new = $old + 0.01;
 } else {
@@ -191,14 +208,24 @@ if(file_exists('patch.php')){
 	} else {
 	echo '<p class="fail">SQL <b>patch file</b> FAILED to copy.</p>';
 	}
+	flush();
+	delay(1);
+	
 $updateType = 'stable';
 } else {
 $updateType = 'normal'; // without patch file
 
 echo'<p>No patch file was found</p>';
+flush();
+delay(1);
 
-// if normal tag, download the latest tag file and unzip to updates folder
 
+// if normal tag
+// Check if "latest" exists in "stable"
+if (in_array($jdata['latest'], $jdata['stable'])) {
+    echo '<p>Last update <b>'.$jdata['latest'].'</b> exists in <b>stable</b> tag. Skipping download and extraction</p>';
+} else { // download the latest tag file and unzip to updates folder
+    echo '<p>Last update <b>'.$jdata['latest'].'</b> does not exists in <b>stable</b> tag. Doing download, extract and merge.</p>';
 $file = $jdata['latest'].'.zip';
 
 $ch = curl_init('https://raw.githubusercontent.com/phploaded/phpix-packages/main/phpix-updates/'.$file);
@@ -228,7 +255,12 @@ if ($zip->open($zipFilePath) === TRUE) {
 } else {
     echo '<p class="fail">Failed to open the Last update <b>'.$file.'</b> file.</p>';
 }
+
+flush();
+delay(1);
+
 unlink($zipFilePath);
+} // end if
 
     $file = fopen($patchFile, 'w');
     if ($file) {
@@ -238,6 +270,9 @@ unlink($zipFilePath);
     } else {
         echo '<p class="fail">Unable to create blank patch file.</p>';
     }
+	
+flush();
+delay(1);
 
 }
 
@@ -259,6 +294,9 @@ if ($paths === false) {
     die('<p class="pass">Error reading <b>'.$outputFile.'</b>.');
 }
 
+flush();
+delay(1);
+	
 // Read filenames to ignore from ignore.txt
 $ignoreFile = 'ignore.txt';
 $ignoreList = [];
@@ -335,6 +373,8 @@ foreach ($paths as $path) {
     }
 } 
 
+flush();
+delay(1);
 
 $time = time();
 $date = date("l, d-m-Y, h:i:s a");
@@ -363,6 +403,8 @@ if (file_put_contents($filename, $php_code) !== false) {
     echo '<p class="fail">Failed to create <b>'.$filename.'</b> .</p>';
 }
 
+flush();
+delay(1);
 
 // create changelog folder
 $newFolderPath = 'updates' . DIRECTORY_SEPARATOR . 'changelog';
@@ -377,10 +419,13 @@ echo '<p class="pass">changelog.html copied as <b>'.$new.'.html</b> successfully
 echo '<p class="fail"><b>changelog.html</b> FAILED to copy.</p>';
 }
 
-// removing root folder index file
+flush();
+delay(1);
+
+// removing update folder index file
 // deleting existing file
-if(file_exists('index.php')){
-unlink('index.php');
+if(file_exists('updates/index.php')){
+unlink('updates/index.php');
 echo '<p><b>index.php</b> in root folder was deleted.</p>';
 }
 
@@ -424,12 +469,17 @@ if ($zip->open($zipFileName, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRU
     echo '<p class="fail">Failed to create zip file.</p>';
 }
 
+flush();
+delay(1);
+
 // deleting modified_files.txt
 if(file_exists($outputFile)){
 unlink($outputFile);
 echo '<p>File list <b>'.$outputFile.'</b> was deleted.</p>';
 }
 
+flush();
+delay(1);
 
 // updating json file
 if($updateType=='stable'){
@@ -450,9 +500,12 @@ $jdata['stable'][] = "".$new."";
         echo '<p class="fail">Unable to create <b>updates.json</b> file.</p>';
     }
 
+flush();
+delay(1);
 
 } // end if all files found
 ?>
+<p class="pass">Update process completed.</p>
 </div>
 </body>
-</html>
+</html><?php flush(); ?>
