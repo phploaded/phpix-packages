@@ -24,15 +24,20 @@ box-shadow:0 0 4px #000;
 .pass{color:green;}
 .fail{color:red;}
 
+.center{
+	text-align:center;
+	border-top:1px solid #ddd;
+	border-bottom:1px solid #ddd;
+	padding:10px;
+}
+
 h1{
 text-align:center;
-padding-bottom:10px;
-border-bottom:1px solid #ddd;
 }
 </style>
 </head>
 <body><div class="content"><h1>PHPix update maker v<?php echo $version; ?></h1>
-<p>Starting update process...</p>
+<h2 class="pass center">Starting update process...</h2>
 <?php
 
 // Helper function to simulate delay
@@ -505,7 +510,7 @@ delay(1);
 
 } // end if all files found
 ?>
-<p class="pass">Update process completed.</p>
+<h2 class="pass center">Update process completed.</h2>
 </div>
 </body>
 </html><?php flush(); ?>
