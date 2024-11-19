@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Documentation - PHPix Updater</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #4a90e2;
+        }
+        .section {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        code {
+            display: block;
+            background: #f9f9f9;
+            padding: 10px;
+            border-left: 3px solid #4a90e2;
+            margin: 10px 0;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        .note {
+            background: #e7f3ff;
+            border-left: 4px solid #4a90e2;
+            padding: 10px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Developer Documentation</h1>
+    <p>This document provides an overview of the functionality, configuration, and code implementation for the <b>PHPix Updater</b> script.</p>
+    
+    <div class="section">
+        <h2>Overview</h2>
+        <p>The PHPix Updater is a PHP-based utility designed to manage updates for the PHPix software. It performs the following tasks:</p>
+        <ul>
+            <li>Verifies the existence of necessary files before proceeding with the update process.</li>
+            <li>Compares file changes between an original and modified directory.</li>
+            <li>Generates a list of modified or new files.</li>
+            <li>Downloads and extracts updates from a remote JSON configuration file.</li>
+            <li>Handles patch files, changelogs, and directory cleanup.</li>
+            <li>Creates a ZIP archive for the updates.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Configuration</h2>
+        <h3>File Structure</h3>
+        <ul>
+            <li><b>ignore.txt</b>: Contains patterns of files to ignore during processing.</li>
+            <li><b>changelog.html</b>: A file containing details about the update.</li>
+            <li><b>patch.php</b>: A file optionally used for SQL updates.</li>
+            <li><b>updates/</b>: Directory for storing update-related files.</li>
+        </ul>
+        <h3>Dependencies</h3>
+        <ul>
+            <li>PHP 7.4 or higher.</li>
+            <li>cURL extension for downloading remote files.</li>
+            <li>ZipArchive class for handling ZIP operations.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Main Functionalities</h2>
+        <h3>File Verification</h3>
+        <p>Ensures that required files (<code>changelog.html</code> and <code>ignore.txt</code>) exist before continuing.</p>
+        
+        <h3>File Comparison</h3>
+        <p>Compares files between two directories (<b>phpix-old</b> and <b>phpix</b>) by hashing normalized content. Modified and new files are saved to <b>modified_files.txt</b>.</p>
+        
+        <h3>Update Process</h3>
+        <ul>
+            <li>Downloads update metadata from a remote JSON file.</li>
+            <li>Handles patch file processing, including creation if missing.</li>
+            <li>Downloads, extracts, and merges updates based on the JSON metadata.</li>
+        </ul>
+
+        <h3>Output Generation</h3>
+        <ul>
+            <li>Creates a <b>phpix-info.php</b> file containing version and metadata details.</li>
+            <li>Archives the updates directory into a ZIP file.</li>
+            <li>Deletes temporary files to ensure a clean directory structure.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Key Functions</h2>
+        <h3>delay</h3>
+        <code>
+            function delay($seconds = 1) {
+                sleep($seconds);
+            }
+        </code>
+        <p>Simulates a delay to manage output flow.</p>
+
+        <h3>getNormalizedFileHashes</h3>
+        <code>
+            function getNormalizedFileHashes($dir, $ignorePatterns) {
+                // Logic for hashing files after normalizing content
+            }
+        </code>
+        <p>Recursively hashes files in a directory while ignoring specified patterns.</p>
+
+        <h3>shouldIgnore</h3>
+        <code>
+            function shouldIgnore($filePath, $patterns) {
+                // Logic to match file paths against ignore patterns
+            }
+        </code>
+        <p>Determines if a file should be ignored based on wildcard patterns.</p>
+
+        <h3>deleteDirectoryContents</h3>
+        <code>
+            function deleteDirectoryContents($dir) {
+                // Recursively deletes all files and directories within the specified folder
+            }
+        </code>
+    </div>
+
+    <div class="section">
+        <h2>Error Handling</h2>
+        <ul>
+            <li>Displays detailed error messages for missing files, failed operations, or invalid inputs.</li>
+            <li>Ensures that the script exits gracefully on critical failures.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Execution Notes</h2>
+        <p>Ensure the following before running the script:</p>
+        <ul>
+            <li>The <b>phpix-old</b> and <b>phpix</b> directories are correctly structured.</li>
+            <li>Permissions are set to allow file read/write operations.</li>
+            <li>All dependencies (cURL, ZipArchive) are available.</li>
+        </ul>
+    </div>
+</body>
+</html>

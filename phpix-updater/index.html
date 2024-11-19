@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHPix updater</title>
+<style type="text/css">
+body{
+margin:0;
+padding:0;
+font:12px verdana, sans-serif;
+background-color:#ddd;
+}
+
+.content{
+background-color:#fff;
+border:1px solid gray;
+padding:50px;
+margin:50px auto;
+max-width:950px;
+box-shadow:0 0 4px #000;
+}
+
+.pass{color:green;}
+.fail{color:red;}
+
+.center{
+	text-align:center;
+	border-top:1px solid #ddd;
+	border-bottom:1px solid #ddd;
+	padding:10px;
+}
+
+h1{
+text-align:center;
+}
+
+.cbtn{
+margin: 30px auto 0 auto;
+text-align: center;
+}
+
+.cbtn > a:first-child, .cbtn > a:last-child{
+  display: inline-block;
+  background-color: red;
+  font: 18px sans-serif;
+  color: #fff;
+  padding: 10px 20px;
+  text-decoration: none;
+  width: 200px;
+}
+
+.cbtn > a:last-child{
+  background-color: #62a200 !important;
+}
+
+ol ul{
+margin-bottom:40px;
+}
+
+ol ul li{line-height:1.5;margin:5px;}
+</style>
+</head>
+<body><div class="content">
+<h1>About PHPix updater</h1>
+<p>This script implements a robust update mechanism for a PHP-based application called PHPix. It manages file and folder operations, generates and processes logs, handles ignored files, downloads and extracts updates, and packages updated files into a zip archive. Below are some highlights and suggestions to ensure it remains clean and efficient:</p>
+
+<h3>Highlights:</h3>
+
+<ol>
+	<li>
+	<p><b>Recursive File Handling</b>:</p>
+
+	<ul>
+		<li>The use of <code>RecursiveDirectoryIterator</code> and <code>RecursiveIteratorIterator</code> simplifies the traversal of directories for tasks like copying, deleting, and zipping files.</li>
+		<li>Normalizing content and ignoring patterns with wildcard support makes the comparison process robust.</li>
+	</ul>
+	</li>
+	<li>
+	<p><b>Customizable Update Logic</b>:</p>
+
+	<ul>
+		<li>It adapts based on the presence of <code>patch.php</code>, supporting both <code>stable</code> and <code>normal</code> update types.</li>
+		<li>Dynamic file downloading and extraction ensure that updates are fetched only when needed.</li>
+	</ul>
+	</li>
+	<li>
+	<p><b>Comprehensive Feedback</b>:</p>
+
+	<ul>
+		<li>Color-coded status messages (<code>pass</code> and <code>fail</code>) provide clear feedback to users on each operation.</li>
+	</ul>
+	</li>
+	<li>
+	<p><b>Backup and Safety Measures</b>:</p>
+
+	<ul>
+		<li>Prior deletion of specific directories/files before updates reduces the risk of conflicts.</li>
+	</ul>
+	</li>
+</ol>
+
+<div class="cbtn"><a href="documentation.html">DOCUMENTATION</a> <a href="create-update.php">CREATE UPDATE NOW</a></div>
+
+
+
+</div>
+</body>
+</html>
