@@ -114,11 +114,11 @@ function normalizeFileContent($filePath) {
 
 // Function to check if a file should be ignored based on patterns
 function shouldIgnore($filePath, $patterns) {
-    foreach ($patterns as $pattern) {
-        // Replace * with a regex pattern that matches any character(s)
-        $regexPattern = '/^' . str_replace(['*', '/'], ['.*', '\/'], $pattern) . '$/';
+    // Normalize the file path
+    $normalizedFilePath = str_replace('\\', '/', $filePath);
 
-        if (preg_match($regexPattern, $filePath)) {
+    foreach ($patterns as $pattern) {
+        if (fnmatch($pattern, $normalizedFilePath)) {
             return true;
         }
     }
