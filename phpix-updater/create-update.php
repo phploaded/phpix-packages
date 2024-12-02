@@ -494,7 +494,7 @@ $jdata['stable'][] = "".$new."";
 	$jdata['latest'] = "".$new."";
 	$jdata['released'] = "".time()."";
 	$htmlContent = file_get_contents('changelog.html');
-	$jdata['info'] = strip_tags($htmlContent);
+	$jdata['info'] = ($htmlContent);
 
     $ujFile = fopen('updates.json', 'w');
     if ($ujFile) {
